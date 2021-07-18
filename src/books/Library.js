@@ -1,41 +1,17 @@
-import React, { Component } from 'react';
-import * as BooksAPI from '../BooksAPI'
+import React from 'react';
 import ListShelves from '../shelf/ListShelves';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-export default class Library extends Component {
-    state = {
-        books: []
-    };
+export default function Library(props) {
 
-    async componentDidMount() {
-        const books = await BooksAPI.getAll();
-        this.setState((state) => ({ ...state, books }));
-    }
-
-    /**
-     * 
-     * @param {string} newShelfId the shelf id to which we are going to move the book 
-     * @param {Book} book the book we want to move 
-     */
-    handleMoveBook = async (newShelfId, book) => {
-        await BooksAPI.update(book, newShelfId);
-        this.setState((state) => {
-            return {
-                ...state,
-                books: [...state.books.filter(b => b.id !== book.id), { ...book, shelf: newShelfId }]
-            }
-        });
-    }
-
-    render() {
-        const { books } = this.state;
+        const { books, onMoveBook } = props;
         return (
             <div className="list-books">
                 <div className="list-books-title">
                     <h1>MyReads</h1>
                 </div>
-                <ListShelves books={books} onMoveBook={this.handleMoveBook} />
+                <ListShelves books={books} onMoveBook={onMoveBook} />
                 <div className="open-search">
                     <Link to="/search">
                         <button>Add a book</button>
@@ -43,5 +19,9 @@ export default class Library extends Component {
                 </div>
             </div>
         )
-    }
+}
+
+Library.propTypes = {
+    books: PropTypes.array.isRequired,
+    onMoveBook: PropTypes.func.isRequired
 }

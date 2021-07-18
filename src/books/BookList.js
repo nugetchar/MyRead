@@ -1,5 +1,6 @@
 import React from 'react';
 import Book from './Book';
+import PropTypes from 'prop-types';
 
 export default function BookList(props) {
     const {books, onMoveBook} = props;
@@ -20,4 +21,9 @@ export default function BookList(props) {
             {books.map((book) => (<li key={book.id}><Book book={book} onMoveBook={handleMoveBook}/></li>))}
         </ol>
     )
+}
+
+BookList.propTypes = {
+    books: PropTypes.array.isRequired,
+    onMoveBook: PropTypes.func.isRequired
 }

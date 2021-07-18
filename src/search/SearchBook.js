@@ -3,8 +3,14 @@ import { Link } from 'react-router-dom';
 import { debounce, serie } from '../utils/operators';
 import * as BooksAPI from '../BooksAPI';
 import BookList from '../books/BookList';
+import PropTypes from 'prop-types';
+import { NONE } from '../shelf/shelves-types';
 
 export default class SearchBook extends Component {
+    static propTypes = {
+        shelvedBooks: PropTypes.array.isRequired
+    }
+
     state = {
         query: '',
         books: []
@@ -34,23 +40,18 @@ export default class SearchBook extends Component {
         .then(books => this.setState((state) => ({ ...state, books: Array.isArray(books) ? books : [] })))
     }
 
-    /**
-     * 
-     * @param {string} newShelfId the shelf id to which we are going to move the book 
-     * @param {Book} book the book we want to move 
-     */
-    handleMoveBook = async (newShelfId, book) => {
-        await BooksAPI.update(book, newShelfId);
-        this.setState((state) => {
-            return {
-                ...state,
-                books: state.books.map(b => b.id === book.id ? ({...book, sheld: newShelfId}) : b)
-            }
+    computeBookList = () => {
+        const {books} = this.state;
+        const {shelvedBooks} = this.props;
+        return books.map((book) => {
+            const b = shelvedBooks.find(({id}) => id === book.id);
+            return {...book, shelf: !!b ? b.shelf : NONE}
         });
     }
 
     render() {
-        const { query, books } = this.state;
+        const { query } = this.state;
+        const { onMoveBook } = this.props;
 
         return (
             <div className="search-books">
@@ -61,7 +62,7 @@ export default class SearchBook extends Component {
                     </div>
                 </div>
                 <div className="search-books-results">
-                    <BookList books={books} onMoveBook={this.handleMoveBook} />
+                    <BookList books={this.computeBookList()} onMoveBook={onMoveBook} />
                 </div>
             </div>
         )
