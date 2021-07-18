@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import { debounce, serie } from '../utils/operators';
 import * as BooksAPI from '../BooksAPI';
 import BookList from '../books/BookList';
-import PropTypes from 'prop-types';
 import { NONE } from '../shelf/shelves-types';
 
 export default class SearchBook extends Component {

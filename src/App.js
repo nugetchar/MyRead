@@ -1,8 +1,9 @@
 import React from 'react'
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import './App.css'
 import Library from './books/Library';
 import SearchBook from './search/SearchBook';
+import NoMatch from './errors/NoMatch';
 import * as BooksAPI from './BooksAPI'
 
 
@@ -32,11 +33,14 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    const {shelvedBooks} = this.state;
+    const { shelvedBooks } = this.state;
     return (
       <div className="app">
-        <Route exact path="/" render={() => <Library books={shelvedBooks} onMoveBook={this.handleMoveBook}/>}></Route>
-        <Route exact path="/search" render={() => <SearchBook shelvedBooks={shelvedBooks.map(({id, shelf}) => ({id, shelf}))} onMoveBook={this.handleMoveBook}/>}></Route>
+        <Switch>
+          <Route exact path="/" render={() => <Library books={shelvedBooks} onMoveBook={this.handleMoveBook} />}></Route>
+          <Route exact path="/search" render={() => <SearchBook shelvedBooks={shelvedBooks.map(({ id, shelf }) => ({ id, shelf }))} onMoveBook={this.handleMoveBook} />}></Route>
+          <Route component={NoMatch}></Route>
+        </Switch>
       </div>
     )
   }
